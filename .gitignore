@@ -1,0 +1,18 @@
+# filename: .gitignore
+# production env files
+backend/.env.production
+frontend/.env.production
+.env.production
+
+# common
+*.log
+.DS_Store
+# filename: .gitignore (add these lines)
+
+# Django runtime data (uploads/collected)
+backend/media/
+backend/staticfiles/
+
+# Python caches everywhere
+**/__pycache__/
+**/*.pyc

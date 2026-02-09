@@ -1,0 +1,36 @@
+/* filename: frontend/src/app/globals.css */
+@import "tailwindcss";
+
+:root {
+  --brand: 214 100% 36%;
+  --brand-2: 215 93% 48%;
+  --brand-soft: 214 100% 96%;
+  --ink: 222 47% 11%;
+  --muted: 215 16% 47%;
+  --line: 214 19% 90%;
+}
+
+body {
+  color: hsl(var(--ink));
+  background: #fff;
+}
+
+/* PURE CSS helper classes (NO @apply) */
+.gov-topbar {
+  background: linear-gradient(90deg, hsl(var(--brand)), hsl(var(--brand-2)));
+}
+
+.gov-container {
+  max-width: 72rem; /* 1152px */
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+.gov-card {
+  border: 1px solid rgb(226 232 240); /* slate-200 */
+  border-radius: 1rem;
+  background: white;
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.04);
+}
