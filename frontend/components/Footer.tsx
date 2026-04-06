@@ -78,7 +78,15 @@ const SOCIALS = [
   // CODEX: X албан ёсны хаяг баталгаажаагүй тул түр нуусан.
 ] as const;
 // CODEX: Client хүсэлтийн 6 албан ёсны холбоос.
-const OFFICIAL_LINKS = [
+type OfficialLink = {
+  label: string;
+  href: string;
+  domain: string;
+  logoBase: string;
+  logoPath?: string;
+};
+
+const OFFICIAL_LINKS: OfficialLink[] = [
   {
     label: "President of Mongolia",
     href: "https://president.mn",
