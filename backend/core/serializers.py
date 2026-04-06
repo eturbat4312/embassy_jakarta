@@ -3,6 +3,7 @@ from .models import (
     News,
     Page,
     ContactMessage,
+    MenuItem,
     ConsularService,
     ServiceResource,
     ServiceCategory,
@@ -70,6 +71,42 @@ class ContactMessageSerializer(serializers.ModelSerializer):
             "created_at",
         )
         read_only_fields = ("created_at",)
+
+
+# CODEX: Menu item-н URL-г нэг төрлийн талбар болгон frontend-д өгнө.
+class MenuItemSerializer(serializers.ModelSerializer):
+    children = serializers.SerializerMethodField()
+    target = serializers.SerializerMethodField()
+
+    class Meta:
+        model = MenuItem
+        fields = [
+            "id",
+            "title",
+            "slug",
+            "item_type",
+            "target",
+            "open_in_new_tab",
+            "order",
+            "children",
+        ]
+
+    # CODEX: parent-child tree-г recursive байдлаар буцаана.
+    def get_children(self, obj):
+        children_qs = (
+            obj.children.filter(is_active=True, language=obj.language)
+            .select_related("page")
+            .order_by("order", "id")
+        )
+        return MenuItemSerializer(children_qs, many=True, context=self.context).data
+
+    # CODEX: item_type бүрийн link-г нэг талбарт нэгтгэж өгнө.
+    def get_target(self, obj):
+        if obj.item_type == "internal_page":
+            return obj.page.slug if obj.page_id else ""
+        if obj.item_type == "external_url":
+            return obj.url or ""
+        return obj.path or ""
 
 
 class ServiceResourceSerializer(serializers.ModelSerializer):

@@ -154,6 +154,22 @@ export default async function StaticPage({ params }: { params: Params }) {
 
   return (
     <div className="max-w-5xl mx-auto px-4 py-10">
+      {/* CODEX: Hero зурагтай page-үүдэд (layout=none ч гэсэн) banner-ийг харуулна. */}
+      {heroSrc ? (
+        <div className="mb-8 overflow-hidden rounded-2xl border border-gray-200 bg-gray-50 shadow-sm">
+          <div className="relative h-[220px] sm:h-[280px] md:h-[340px] w-full">
+            <Image
+              src={heroSrc}
+              alt={page.title}
+              fill
+              priority
+              unoptimized
+              className="object-cover object-center"
+            />
+          </div>
+        </div>
+      ) : null}
+
       <h1 className="text-3xl font-bold mb-6">{page.title}</h1>
 
       <div

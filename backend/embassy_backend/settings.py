@@ -17,6 +17,14 @@ DEBUG = os.getenv("DJANGO_DEBUG", "True").lower() == "true"
 # Allowed hosts
 ALLOWED_HOSTS = os.getenv("DJANGO_ALLOWED_HOSTS", "*").split(",")
 
+CSRF_TRUSTED_ORIGINS = os.getenv(
+    "DJANGO_CSRF_TRUSTED_ORIGINS",
+    "https://jakartaembassy.mn",
+).split(",")
+
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+USE_X_FORWARDED_HOST = True
+
 # Application definition
 INSTALLED_APPS = [
     # Django built-in apps
@@ -70,7 +78,7 @@ DATABASES = {
         "ENGINE": "django.db.backends.postgresql",
         "NAME": "embassy",
         "USER": "embassy",
-        "PASSWORD": "embassy_password_change_me",
+        "PASSWORD": os.getenv("DB_PASSWORD", ""),
         "HOST": "db",
         "PORT": 5432,
     }

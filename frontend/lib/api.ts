@@ -1,5 +1,29 @@
 // filename: frontend/lib/api.ts
 type Json = any;
+// CODEX: Dynamic navbar menu tree-н frontend type.
+export type MenuNode = {
+  id: number;
+  title: string;
+  slug?: string;
+  item_type: "internal_page" | "internal_path" | "external_url";
+  target: string;
+  open_in_new_tab: boolean;
+  order: number;
+  children: MenuNode[];
+};
+// CODEX: Site search API-н төрлийн тодорхойлолт.
+export type SiteSearchResult = {
+  type: "news" | "page" | "service";
+  title: string;
+  slug: string;
+  url: string;
+};
+export type SiteSearchResponse = {
+  query: string;
+  lang: string;
+  results: SiteSearchResult[];
+  counts: { news: number; pages: number; services: number };
+};
 
 const isServer = typeof window === "undefined";
 
@@ -118,6 +142,31 @@ export async function sendContactMessage(data: any) {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data),
   });
+}
+
+// CODEX: Navbar-д зориулсан menu tree-г backend-ээс ачаална.
+export async function getMenuTree(locale: string): Promise<MenuNode[]> {
+  const data: any = await apiFetch(`menus/?lang=${encodeURIComponent(locale)}`, {
+    cache: "no-store",
+  });
+
+  if (Array.isArray(data)) return data as MenuNode[];
+  if (Array.isArray(data?.results)) return data.results as MenuNode[];
+
+  console.error("Unexpected menus response:", data);
+  return [];
+}
+
+// CODEX: Navbar болон search page-д ашиглах сайтын хайлт.
+export async function searchSite(
+  locale: string,
+  query: string
+): Promise<SiteSearchResponse> {
+  const q = String(query || "").trim();
+  return apiFetch(
+    `search/?lang=${encodeURIComponent(locale)}&q=${encodeURIComponent(q)}`,
+    { cache: "no-store" }
+  );
 }
 
 // -------------------- CONSULAR SERVICES --------------------

@@ -7,6 +7,7 @@ from .models import (
     News,
     Page,
     ContactMessage,
+    MenuItem,
     ServiceCategory,
     ConsularService,
     ServiceResource,
@@ -44,6 +45,52 @@ class PageAdmin(admin.ModelAdmin):
 class ContactMessageAdmin(admin.ModelAdmin):
     list_display = ("name", "email", "created_at")
     search_fields = ("name", "email", "message")
+
+
+# CODEX: Navbar/menu-г admin дээрээс динамикаар удирдах ModelAdmin.
+@admin.register(MenuItem)
+class MenuItemAdmin(admin.ModelAdmin):
+    list_display = (
+        "title",
+        "language",
+        "parent",
+        "item_type",
+        "order",
+        "is_active",
+    )
+    list_filter = ("language", "is_active", "item_type", "parent")
+    search_fields = ("title", "slug", "path", "url")
+    ordering = ("language", "parent__id", "order", "id")
+    prepopulated_fields = {"slug": ("title",)}
+
+    # CODEX: Контент менежер input хийх үед ойлгомжтой байлгахын тулд хэсэглэв.
+    fieldsets = (
+        (
+            "Үндсэн",
+            {
+                "fields": (
+                    "language",
+                    "title",
+                    "slug",
+                    "parent",
+                    "order",
+                    "is_active",
+                )
+            },
+        ),
+        (
+            "Линк тохиргоо",
+            {
+                "fields": (
+                    "item_type",
+                    "page",
+                    "path",
+                    "url",
+                    "open_in_new_tab",
+                )
+            },
+        ),
+    )
 
 
 # -----------------------------

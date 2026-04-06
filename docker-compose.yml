@@ -7,7 +7,7 @@ services:
     environment:
       POSTGRES_DB: embassy
       POSTGRES_USER: embassy
-      POSTGRES_PASSWORD: embassy_password_change_me
+      POSTGRES_PASSWORD: Markhoyor4312@
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
@@ -27,6 +27,7 @@ services:
       - ./backend:/app
     environment:
       - PYTHONUNBUFFERED=1
+      - DB_PASSWORD=embassy_password_change_me
     depends_on:
       db:
         condition: service_healthy

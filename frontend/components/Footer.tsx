@@ -3,6 +3,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useState } from "react";
 
 const CONTACT = {
   mn: {
@@ -19,8 +20,6 @@ const CONTACT = {
       about: "Элчин сайдын яам",
       news: "Мэдээ мэдээлэл",
     },
-    source:
-      "(Эх сурвалж: Монголын ГХЯ – Хилийн чанадад суугаа дипломат төлөөлөгчийн газрууд)",
   },
   en: {
     name: "Embassy of Mongolia in the Republic of Indonesia",
@@ -36,7 +35,6 @@ const CONTACT = {
       about: "About the Embassy",
       news: "News",
     },
-    source: "(Source: MFA of Mongolia – Diplomatic Missions Abroad)",
   },
   id: {
     name: "Kedutaan Besar Mongolia di Republik Indonesia",
@@ -52,7 +50,6 @@ const CONTACT = {
       about: "Tentang Kedutaan",
       news: "Berita",
     },
-    source: "(Sumber: Kemenlu Mongolia – Perwakilan Diplomatik di Luar Negeri)",
   },
 } as const;
 
@@ -63,6 +60,64 @@ const ADDRESS_LINES = [
 
 const PHONE = "+62 21 21684133";
 const EMAIL = "jakarta@mfa.gov.mn";
+// CODEX: Client хүсэлтийн дагуу social холбоосууд нэмэв.
+const SOCIALS = [
+  {
+    label: "Facebook",
+    href: "https://www.facebook.com/profile.php?id=61567859175860",
+    icon: "facebook",
+    colorClass: "bg-[#1877F2] text-white border-[#1877F2] hover:brightness-95",
+  },
+  {
+    label: "Instagram",
+    href: "https://www.instagram.com/monembjkt/?hl=en",
+    icon: "instagram",
+    colorClass:
+      "bg-[radial-gradient(circle_at_30%_107%,#fdf497_0%,#fdf497_5%,#fd5949_45%,#d6249f_60%,#285AEB_90%)] text-white border-transparent hover:brightness-95",
+  },
+  // CODEX: X албан ёсны хаяг баталгаажаагүй тул түр нуусан.
+] as const;
+// CODEX: Client хүсэлтийн 6 албан ёсны холбоос.
+const OFFICIAL_LINKS = [
+  {
+    label: "President of Mongolia",
+    href: "https://president.mn",
+    domain: "president.mn",
+    logoBase: "president",
+  },
+  {
+    label: "Government of Mongolia",
+    href: "https://gov.mn",
+    domain: "gov.mn",
+    logoBase: "government",
+  },
+  {
+    label: "Ministry of Foreign Affairs",
+    href: "https://mfa.gov.mn",
+    domain: "mfa.gov.mn",
+    logoBase: "mfa",
+    // CODEX: Client хүсэлтээр MFA logo-г сайтын үндсэн brand logo-той ижил болгосон.
+    logoPath: "/brand-mark.svg",
+  },
+  {
+    label: "Go Mongolia",
+    href: "https://gomongolia.gov.mn",
+    domain: "gomongolia.gov.mn",
+    logoBase: "go-mongolia",
+  },
+  {
+    label: "Immigration",
+    href: "https://immigration.gov.mn",
+    domain: "immigration.gov.mn",
+    logoBase: "immigration",
+  },
+  {
+    label: "Invest Mongolia",
+    href: "https://investmongolia.gov.mn",
+    domain: "investmongolia.gov.mn",
+    logoBase: "invest-mongolia",
+  },
+] as const;
 
 function yearNow() {
   return new Date().getFullYear();
@@ -78,6 +133,71 @@ function useLocaleFromPathname() {
   const pathname = usePathname() || "/";
   const seg = pathname.split("/").filter(Boolean)[0]; // first path segment
   return normalizeLocale(seg);
+}
+
+// CODEX: official logo-д png/svg аль аль форматыг fallback-оор дэмжинэ.
+function OfficialLogo({
+  logoPath,
+  logoBase,
+  label,
+}: {
+  logoPath?: string;
+  logoBase: string;
+  label: string;
+}) {
+  const [idx, setIdx] = useState(0);
+  const candidates = [
+    ...(logoPath ? [logoPath] : []),
+    `/official/${logoBase}.png`,
+    `/official/${logoBase}.svg`,
+  ];
+  const src = candidates[idx];
+
+  if (!src) {
+    return (
+      <div className="flex h-12 w-16 items-center justify-center rounded-md border border-slate-200 bg-slate-50 text-xs font-bold text-slate-500">
+        {label.slice(0, 2).toUpperCase()}
+      </div>
+    );
+  }
+
+  return (
+    <img
+      src={src}
+      alt={`${label} logo`}
+      className="h-14 w-full max-w-[170px] object-contain"
+      onError={() => setIdx((x) => x + 1)}
+    />
+  );
+}
+
+// CODEX: Social-д үсгийн оронд SVG icon ашиглав.
+function SocialIcon({ type }: { type: "facebook" | "instagram" | "x" }) {
+  if (type === "facebook") {
+    return (
+      <svg
+        viewBox="0 0 16 16"
+        className="h-5 w-5 fill-current"
+        aria-hidden="true"
+      >
+        {/* CODEX: Facebook "f" (bootstrap-icons path) */}
+        <path d="M16 8.049C16 3.604 12.418 0 8 0S0 3.604 0 8.049C0 12.07 2.926 15.401 6.75 16v-5.625H4.719V8.049H6.75V6.275c0-2.017 1.195-3.131 3.022-3.131.876 0 1.792.157 1.792.157v1.98h-1.01c-.994 0-1.304.621-1.304 1.258V8.05h2.219l-.354 2.326H9.25V16C13.074 15.401 16 12.07 16 8.049z" />
+      </svg>
+    );
+  }
+  if (type === "instagram") {
+    return (
+      <svg viewBox="0 0 24 24" className="h-4 w-4 fill-current" aria-hidden="true">
+        {/* CODEX: Official-style Instagram camera glyph */}
+        <path d="M8 3h8a5 5 0 0 1 5 5v8a5 5 0 0 1-5 5H8a5 5 0 0 1-5-5V8a5 5 0 0 1 5-5zm0 2a3 3 0 0 0-3 3v8a3 3 0 0 0 3 3h8a3 3 0 0 0 3-3V8a3 3 0 0 0-3-3H8zm9.2 1.8a1.2 1.2 0 1 1 0 2.4 1.2 1.2 0 0 1 0-2.4zM12 8a4 4 0 1 1 0 8 4 4 0 0 1 0-8zm0 2a2 2 0 1 0 0 4 2 2 0 0 0 0-4z" />
+      </svg>
+    );
+  }
+  return (
+    <svg viewBox="0 0 24 24" className="h-4 w-4 fill-current" aria-hidden="true">
+      <path d="M18.9 3H22l-6.8 7.8L23 21h-6.2l-4.8-6.3L6.5 21H3.4l7.3-8.4L1 3h6.3l4.3 5.7L18.9 3zm-1.1 16h1.7L6.3 4.9H4.5L17.8 19z" />
+    </svg>
+  );
 }
 
 export default function Footer() {
@@ -122,7 +242,21 @@ export default function Footer() {
                 </div>
               </div>
 
-              <div className="mt-3 text-xs text-slate-500">{t.source}</div>
+              {/* CODEX: Social icon дээр дарж шууд холбоос руу орох блок. */}
+              <div className="mt-4 flex items-center gap-2">
+                {SOCIALS.map((s) => (
+                  <a
+                    key={s.label}
+                    href={s.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={s.label}
+                    className={`inline-flex h-10 w-10 items-center justify-center rounded-full border shadow-sm transition ${s.colorClass}`}
+                  >
+                    <SocialIcon type={s.icon} />
+                  </a>
+                ))}
+              </div>
             </div>
           </div>
 
@@ -167,7 +301,8 @@ export default function Footer() {
             </div>
 
             <div className="mt-3 text-sm text-slate-700 leading-6">
-              <div className="text-slate-500">{CONTACT.en.name}</div>
+              {/* CODEX: Client хүсэлтээр footer about текстийг тогтмол болгосон. */}
+              <div className="text-slate-500">Embassy of Mongolia in Jakarta</div>
               <div className="mt-3 text-xs text-slate-500">
                 © {yearNow()} — {t.rights}
               </div>
@@ -175,12 +310,41 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="mt-10 border-t pt-6 text-xs text-slate-500 flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
+        {/* CODEX: Reference зурагтай адил логонуудыг нэг мөр strip + mobile horizontal scroll хэлбэрээр харуулав. */}
+        <div className="mt-8 border-t border-blue-200 pt-5">
+          <div className="rounded-xl border border-slate-200 bg-white px-3 py-3">
+            <div className="flex gap-3 overflow-x-auto pb-1 lg:grid lg:grid-cols-6 lg:overflow-visible">
+              {OFFICIAL_LINKS.map((l) => (
+                <a
+                  key={l.label}
+                  href={l.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex min-h-[150px] min-w-[220px] flex-col items-center justify-start gap-2 rounded-lg border border-slate-200 bg-white px-3 py-3 text-sm text-slate-700 transition hover:-translate-y-[1px] hover:bg-slate-50 hover:shadow-sm lg:min-w-0"
+                >
+                  <div className="flex h-[78px] w-full items-center justify-center rounded-md border border-slate-200 bg-white px-2">
+                  <OfficialLogo
+                    logoPath={l.logoPath}
+                    logoBase={l.logoBase}
+                    label={l.label}
+                  />
+                  </div>
+                  {/* CODEX: Нэр/домэйн текст үргэлж харагдах ёстой гэсэн шаардлагад нийцүүлэв. */}
+                  <div className="w-full text-center">
+                    <div className="text-sm font-semibold leading-tight text-slate-800">
+                      {l.label}
+                    </div>
+                    <div className="mt-1 text-[11px] text-slate-500">{l.domain}</div>
+                  </div>
+                </a>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        <div className="mt-6 border-t pt-6 text-xs text-slate-500">
           <div>
             {ADDRESS_LINES.join(" · ")} · {PHONE}
-          </div>
-          <div className="text-slate-400">
-            Powered by Next.js · Django REST · PostgreSQL
           </div>
         </div>
       </div>
