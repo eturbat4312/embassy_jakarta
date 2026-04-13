@@ -117,17 +117,18 @@ export default async function StaticPage({ params }: { params: Params }) {
     return (
       <div className="max-w-5xl mx-auto px-4 py-10">
         {heroSrc ? (
-          <div className="mb-8 overflow-hidden rounded-2xl border border-gray-200 bg-gray-50 shadow-sm">
-            <div className="relative h-[220px] sm:h-[280px] md:h-[360px] w-full">
-              <Image
-                src={heroSrc}
-                alt={page.title}
-                fill
-                priority
-                unoptimized
-                className="object-cover object-center"
-              />
-            </div>
+          <div className="mb-8 flex max-h-[520px] items-center justify-center overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
+            {/* CODEX: Next/Image хадгалж object-contain + wrapper constraint-оор crop-гүй харуулна. */}
+            <Image
+              src={heroSrc}
+              alt={page.title}
+              width={1600}
+              height={900}
+              priority
+              unoptimized
+              sizes="100vw"
+              className="max-h-[520px] h-auto w-auto max-w-full object-contain"
+            />
           </div>
         ) : null}
 
@@ -156,17 +157,18 @@ export default async function StaticPage({ params }: { params: Params }) {
     <div className="max-w-5xl mx-auto px-4 py-10">
       {/* CODEX: Hero зурагтай page-үүдэд (layout=none ч гэсэн) banner-ийг харуулна. */}
       {heroSrc ? (
-        <div className="mb-8 overflow-hidden rounded-2xl border border-gray-200 bg-gray-50 shadow-sm">
-          <div className="relative h-[220px] sm:h-[280px] md:h-[340px] w-full">
-            <Image
-              src={heroSrc}
-              alt={page.title}
-              fill
-              priority
-              unoptimized
-              className="object-cover object-center"
-            />
-          </div>
+        <div className="mb-8 flex max-h-[520px] items-center justify-center overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
+          {/* CODEX: Next/Image хадгалж object-contain + wrapper constraint-оор crop-гүй харуулна. */}
+          <Image
+            src={heroSrc}
+            alt={page.title}
+            width={1600}
+            height={900}
+            priority
+            unoptimized
+            sizes="100vw"
+            className="max-h-[520px] h-auto w-auto max-w-full object-contain"
+          />
         </div>
       ) : null}
 
