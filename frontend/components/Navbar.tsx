@@ -161,14 +161,23 @@ export default function Navbar({
             href={`/${currentLocale}`}
             className="flex items-center gap-3 min-w-0"
           >
-            <Image
-              src="/brand-mark.svg"
-              alt="Embassy mark"
-              width={68}
-              height={68}
-              priority
-              className="shrink-0"
-            />
+            <div className="flex flex-col items-center gap-1 shrink-0">
+              <Image
+                src="/brand-mark.svg"
+                alt="Embassy mark"
+                width={68}
+                height={68}
+                priority
+              />
+              <Image
+                src="/official/MON_IND_70_YEARS-01.png"
+                alt="Mongolia-Indonesia 70 years"
+                width={160}
+                height={38}
+                unoptimized
+                className="object-contain"
+              />
+            </div>
             <div className="min-w-0">
               <div className="text-[13px] sm:text-sm font-semibold text-slate-900 leading-snug line-clamp-2">
                 {title.top}

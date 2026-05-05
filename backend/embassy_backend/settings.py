@@ -129,10 +129,19 @@ REST_FRAMEWORK = {
 TINYMCE_DEFAULT_CONFIG = {
     "height": 450,
     "menubar": False,
-    "plugins": "link image code lists",
+    # CODEX: Body текстийн хэмжээ/heading/өнгө өөрчлөх editor боломж нэмэв.
+    "plugins": "link image code lists table paste",
     "toolbar": (
-        "undo redo | bold italic | "
+        "undo redo | blocks | bold italic underline | "
+        # CODEX: TinyMCE toolbar-д font family/size сонголтыг шууд харуулна.
+        "fontfamily fontsize forecolor backcolor | "
         "alignleft aligncenter alignright | "
-        "bullist numlist | link image | code"
+        "bullist numlist | link image table | code"
+    ),
+    "fontsize_formats": "12px 14px 16px 18px 20px 24px 28px 32px",
+    "block_formats": "Paragraph=p; Heading 2=h2; Heading 3=h3; Heading 4=h4",
+    "content_style": (
+        "body { font-family: Arial, sans-serif; font-size:16px; } "
+        "h2 { font-size: 1.5rem; } h3 { font-size: 1.25rem; }"
     ),
 }
